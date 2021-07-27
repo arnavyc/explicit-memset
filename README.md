@@ -2,13 +2,18 @@
 SPDX-License-Identifier: 0BSD
 -->
 
-# Sample BSD Zero Clause licensed project _(license-0bsd-template)_
+# explicit-memset
 
-[![GitHub](https://img.shields.io/github/license/arnavyash/license-0bsd-template?logo=github&style=flat-square)](LICENSE.md)
+[![GitHub](https://img.shields.io/github/license/arnavyash/explicit-memset?logo=github&style=flat-square)](LICENSE.md)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-Template for creating projects licensed under BSD Zero Clause License, a
-public-domain equivalent license.
+`ay_explicit_memset` function, a version of `memset` that can escape dead code
+elimination in C compilers.
+
+Useful for clearing out memory after a region of memory has been used by the
+program.
+
+WIP
 
 ## Table of Contents
 
@@ -25,12 +30,9 @@ public-domain equivalent license.
 
 ## Usage
 
-- Either fork or use the repository as a Github template.
-- Replace all instances of `<authors>` with either your name or text such as
-  `Contributors of Project <name>`.
-- Either replace `[<email>]` with your personal or project email enclosed
-  within angle brackets (\<, \>), such as `<email@example.com>` or just
-  remove `[<email>]` if you don't want it.
+```
+
+```
 
 ## Contributing
 
@@ -40,7 +42,7 @@ additional terms or conditions.
 
 ## License
 
-&copy; \<year\> \<authors\> [\<email\>]
+&copy; 2021 arnavyc \<arnavyc@outlook.com\>
 
 Licensed under the BSD Zero Clause License. See [LICENSE file](LICENSE.md) file
 in the project root, or https://opensource.org/licenses/0BSD for full license information.
