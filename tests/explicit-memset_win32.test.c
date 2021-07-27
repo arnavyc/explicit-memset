@@ -1,3 +1,7 @@
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+
 #include <string.h>
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
