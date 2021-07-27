@@ -44,8 +44,9 @@ additional terms or conditions.
 
 &copy; 2021 arnavyc \<arnavyc@outlook.com\>
 
-Licensed under the BSD Zero Clause License. See [LICENSE file](LICENSE.md) file
-in the project root, or https://opensource.org/licenses/0BSD for full license information.
+Licensed under the BSD Zero Clause License. See [LICENSE file](LICENSE.md) in
+the project root, or https://opensource.org/licenses/0BSD for full license
+information.
 
 ```
 SPDX-License-Identifier: 0BSD
