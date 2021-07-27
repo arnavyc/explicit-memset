@@ -59,6 +59,8 @@ void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
 	printStack("fiber");
   ULONG_PTR low, high;
   GetCurrentThreadStackLimits(&low, &high);
+  assert(low < high);
+
   void *found_ptr = memmem(low, high - low, localBuffer, sizeof localBuffer);
   assert(found_ptr != 0);
 
@@ -74,6 +76,8 @@ void __stdcall test_with_explicit_memset(void* lpFiberParameter) {
 	printStack("fiber");
   ULONG_PTR low, high;
   GetCurrentThreadStackLimits(&low, &high);
+  assert(low < high);
+
   void *found_ptr = memmem(low, high - low, localBuffer, sizeof localBuffer);
   assert(found_ptr == 0);
 
