@@ -1,3 +1,4 @@
+#include <string.h>
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
@@ -8,7 +9,6 @@
 
 #include <ay/explicit-memset.h>
 
-#ifndef __GLIBC__
 /*
  * The memmem() function finds the start of the first occurrence of the
  * substring 'needle' of length 'nlen' in the memory area 'haystack' of
@@ -38,7 +38,6 @@ void *memmem(const void *haystack, size_t hlen, const void *needle,
 
   return NULL;
 }
-#endif /* __GLIBC__ */
 
 void printStack( const char* what )
 {
@@ -58,6 +57,11 @@ void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
   ay_explicit_memset(localBuffer, 0, cbBuffer);
 
 	printStack("fiber");
+  ULONG_PTR low, high;
+  GetCurrentThreadStackLimits(&low, &high);
+  void *found_ptr = memmem(low, high - low, localBuffer, sizeof localBuffer);
+  assert(found_ptr != 0);
+
 	SwitchToFiber(fiberMain);
 }
 
@@ -81,7 +85,7 @@ int main() {
 	unsigned char localBuffer[cbBuffer] = { 0x4e, 0x65, 0x76, 0x65, 0x72, 0x20, 0x67, 0x6f, 0x6e, 0x6e, 0x61, 0x20, 0x67, 0x69, 0x76, 0x65, 0x20, 0x79, 0x6f, 0x75, 0x20, 0x75, 0x70, 0x2c };
 
 	fiberMain = ConvertThreadToFiber(NULL);
-	fiberSecondary = CreateFiber( 0, &fiberProc, localBuffer);
+	fiberSecondary = CreateFiber( 0, &test_without_explicit_memset, localBuffer);
 
 	printStack( "converted" );
 
