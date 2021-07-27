@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include <munit.h>
 #include <ay/explicit-memset.h>
 
 /*
@@ -50,9 +51,15 @@ void printStack( const char* what )
 	printf( "%s: %p - %p\n", what, (void *)lo, (void *)high);
 }
 
-void* fiberMain, *fiberSecondary;
-
 #define cbBuffer 24
+static const unsigned char localBuffer[cbBuffer] = { 0x4e, 0x65, 0x76, 0x65, 0x72, 0x20, 0x67, 0x6f, 0x6e, 0x6e, 0x61, 0x20, 0x67, 0x69, 0x76, 0x65, 0x20, 0x79, 0x6f, 0x75, 0x20, 0x75, 0x70, 0x2c };
+
+struct found_secrets {
+  int without_bzero;
+  int with_bzero;
+};
+
+static struct found_secrets secrets_found = {0};
 
 void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
   unsigned char localBuffer[cbBuffer];
@@ -63,10 +70,10 @@ void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
 	printStack("fiber");
   ULONG_PTR low, high;
   GetCurrentThreadStackLimits(&low, &high);
-  assert(low < high);
+  munit_assert_ptr(low, <, high);
 
   void *found_ptr = memmem(low, high - low, localBuffer, sizeof localBuffer);
-  assert(found_ptr != 0);
+  secrets_found.without_bzero == !!found_ptr;
 
 	SwitchToFiber(fiberMain);
 }
@@ -80,10 +87,10 @@ void __stdcall test_with_explicit_memset(void* lpFiberParameter) {
 	printStack("fiber");
   ULONG_PTR low, high;
   GetCurrentThreadStackLimits(&low, &high);
-  assert(low < high);
+  munit_assert_ptr(low, <, high);
 
   void *found_ptr = memmem(low, high - low, localBuffer, sizeof localBuffer);
-  assert(found_ptr == 0);
+  secrets_found.without_bzero == !found_ptr;
 
 	SwitchToFiber(fiberMain);
 }
@@ -103,19 +110,41 @@ void __stdcall fiberProc(void* lpFiberParameter) {
 	SwitchToFiber(fiberMain);
 }*/
 
-int main() {
-	printStack("start");
+static MunitResult without_bzero_test(const MunitParameter params[],
+                                   void *user_data_or_fixture) {
+  void *fiber_without_explicit_memset = CreateFiber(0, &test_without_explicit_memset, localBuffer);
 
-	unsigned char localBuffer[cbBuffer] = { 0x4e, 0x65, 0x76, 0x65, 0x72, 0x20, 0x67, 0x6f, 0x6e, 0x6e, 0x61, 0x20, 0x67, 0x69, 0x76, 0x65, 0x20, 0x79, 0x6f, 0x75, 0x20, 0x75, 0x70, 0x2c };
+  SwitchToFiber(fiber_without_explicit_memset);
 
-	fiberMain = ConvertThreadToFiber(NULL);
-	fiberSecondary = CreateFiber( 0, &test_without_explicit_memset, localBuffer);
-	void *fiber_with_explicit_memset = CreateFiber( 0, &test_with_explicit_memset, localBuffer);
+  munit_assert_int(secrets_found.without_bzero, ==, 1);
+  return MUNIT_OK;
+}
 
-	printStack( "converted" );
+static MunitResult with_bzero_test(const MunitParameter params[],
+                                   void *user_data_or_fixture) {
+  void *fiber_with_explicit_memset = CreateFiber(0, &test_with_explicit_memset, localBuffer);
 
-	SwitchToFiber( fiberSecondary );
+  SwitchToFiber(fiber_with_explicit_memset);
 
-	printStack( "back to main" );
-	return 0;
+  munit_assert_int(secrets_found.with_bzero, ==, 0);
+  return MUNIT_OK;
+}
+
+static MunitTest tests[] = {
+    {(char *)"/without-bzero", without_bzero_test, NULL, NULL, MUNIT_TEST_OPTION_NONE,
+     NULL},
+    {(char *)"/with-bzero", with_bzero_test, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+};
+
+static const MunitSuite suite = {
+    (char *)"/explicit-bzero", /* name */
+    tests,                     /* tests */
+    NULL,                      /* suites */
+    1,                         /* iterations */
+    MUNIT_SUITE_OPTION_NONE,   /* options */
+};
+
+int main(int argc, char *const argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
+	return munit_suite_main(&suite, NULL, argc, argv);
 }
