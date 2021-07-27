@@ -5,7 +5,12 @@
 include(DownloadAndUseMunit)
 include(Munit)
 
-add_executable(explicit-memset_tests explicit-memset.test.c)
+if (WIN32)
+  add_executable(explicit-memset_tests explicit-memset_win32.test.c)
+elseif (UNIX)
+  add_executable(explicit-memset_tests explicit-memset.test.c)
+endif ()
+
 target_link_libraries(explicit-memset_tests explicit-memset munit)
 
 munit_discover_tests(explicit-memset_tests)
