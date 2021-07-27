@@ -57,6 +57,8 @@ struct found_secrets {
 
 static struct found_secrets secrets_found = {0};
 
+void* fiberMain;
+
 void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
   unsigned char localBuffer[cbBuffer];
   memcpy(localBuffer, (unsigned char *)lpFiberParameter, cbBuffer);
@@ -142,5 +144,6 @@ static const MunitSuite suite = {
 };
 
 int main(int argc, char *const argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
+  fiberMain = ConvertThreadToFiber(NULL);
 	return munit_suite_main(&suite, NULL, argc, argv);
 }
