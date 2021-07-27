@@ -71,7 +71,7 @@ void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
   munit_assert_ptr(low, <, high);
 
   void *found_ptr = memmem(low, high - low, localBuffer, sizeof localBuffer);
-  secrets_found.without_bzero == !!found_ptr;
+  secrets_found.without_bzero = !!found_ptr;
 
 	SwitchToFiber(fiberMain);
 }
@@ -88,7 +88,7 @@ void __stdcall test_with_explicit_memset(void* lpFiberParameter) {
   munit_assert_ptr(low, <, high);
 
   void *found_ptr = memmem(low, high - low, localBuffer, sizeof localBuffer);
-  secrets_found.without_bzero == !found_ptr;
+  secrets_found.without_bzero = !found_ptr;
 
 	SwitchToFiber(fiberMain);
 }
