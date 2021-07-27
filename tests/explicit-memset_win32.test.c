@@ -54,7 +54,7 @@ void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
   unsigned char localBuffer[cbBuffer];
   memcpy(localBuffer, (unsigned char *)lpFiberParameter, cbBuffer);
 
-  ay_explicit_memset(localBuffer, 0, cbBuffer);
+  /*ay_explicit_memset(localBuffer, 0, cbBuffer);*/
 
 	printStack("fiber");
   ULONG_PTR low, high;
@@ -65,6 +65,22 @@ void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
 	SwitchToFiber(fiberMain);
 }
 
+void __stdcall test_with_explicit_memset(void* lpFiberParameter) {
+  unsigned char localBuffer[cbBuffer];
+  memcpy(localBuffer, (unsigned char *)lpFiberParameter, cbBuffer);
+
+  ay_explicit_memset(localBuffer, 0, cbBuffer);
+
+	printStack("fiber");
+  ULONG_PTR low, high;
+  GetCurrentThreadStackLimits(&low, &high);
+  void *found_ptr = memmem(low, high - low, localBuffer, sizeof localBuffer);
+  assert(found_ptr == 0);
+
+	SwitchToFiber(fiberMain);
+}
+
+/*
 void __stdcall fiberProc(void* lpFiberParameter) {
   unsigned char localBuffer[cbBuffer];
   memcpy(localBuffer, (unsigned char *)lpFiberParameter, cbBuffer);
@@ -77,7 +93,7 @@ void __stdcall fiberProc(void* lpFiberParameter) {
 
 	printStack("fiber");
 	SwitchToFiber(fiberMain);
-}
+}*/
 
 int main() {
 	printStack("start");
@@ -86,6 +102,7 @@ int main() {
 
 	fiberMain = ConvertThreadToFiber(NULL);
 	fiberSecondary = CreateFiber( 0, &test_without_explicit_memset, localBuffer);
+	void *fiber_with_explicit_memset = CreateFiber( 0, &test_with_explicit_memset, localBuffer);
 
 	printStack( "converted" );
 
