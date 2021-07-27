@@ -22,26 +22,22 @@
  * The return value is a pointer to the beginning of the sub-string, or
  * NULL if the substring is not found.
  */
-void *memmem(const void *haystack, size_t hlen, const void *needle,
-             size_t nlen) {
-  int needle_first;
-  const unsigned char *p = (const unsigned char *)haystack;
-  size_t plen = hlen;
+void *memmem(const void *haystack, size_t haystack_len, 
+    const void * const needle, const size_t needle_len)
+{
+    if (haystack == NULL) return NULL; // or assert(haystack != NULL);
+    if (haystack_len == 0) return NULL;
+    if (needle == NULL) return NULL; // or assert(needle != NULL);
+    if (needle_len == 0) return NULL;
 
-  if (!nlen)
+    for (const char *h = haystack;
+            haystack_len >= needle_len;
+            ++h, --haystack_len) {
+        if (!memcmp(h, needle, needle_len)) {
+            return (void *)h;
+        }
+    }
     return NULL;
-
-  needle_first = *(unsigned char *)needle;
-
-  while (plen >= nlen && (p = (unsigned char *)memchr(p, needle_first, plen - nlen + 1))) {
-    if (!memcmp(p, needle, nlen))
-      return (void *)p;
-
-    p++;
-    plen = hlen - (p - haystack);
-  }
-
-  return NULL;
 }
 
 void printStack( const char* what )
