@@ -16,7 +16,7 @@ jobs:
         config:
           - name: 'Windows Latest - MSVC'
             runner: windows-latest
-            build-type: Release
+            build-type: Debug
             cc: cl
             cxx: cl
 
