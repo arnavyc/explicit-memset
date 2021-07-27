@@ -57,6 +57,7 @@ struct found_secrets {
 
 static struct found_secrets secrets_found = {0};
 
+void *fiberMain;
 
 void __stdcall test_without_explicit_memset(void* lpFiberParameter) {
   unsigned char localBuffer[cbBuffer];
@@ -111,7 +112,7 @@ static MunitResult without_bzero_test(const MunitParameter params[],
                                    void *user_data_or_fixture) {
   void *fiber_without_explicit_memset = CreateFiber(0, &test_without_explicit_memset, localBuffer);
 
-  void *fiberMain = ConvertThreadToFiber(NULL);
+  fiberMain = ConvertThreadToFiber(NULL);
   SwitchToFiber(fiber_without_explicit_memset);
 
   munit_assert_int(secrets_found.without_bzero, ==, 1);
@@ -122,7 +123,7 @@ static MunitResult with_bzero_test(const MunitParameter params[],
                                    void *user_data_or_fixture) {
   void *fiber_with_explicit_memset = CreateFiber(0, &test_with_explicit_memset, localBuffer);
 
-  void *fiberMain = ConvertThreadToFiber(NULL);
+  fiberMain = ConvertThreadToFiber(NULL);
   SwitchToFiber(fiber_with_explicit_memset);
 
   munit_assert_int(secrets_found.with_bzero, ==, 0);
