@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "explicit-memset.h"
+#include <ay/explicit-memset.h>
 
 #if defined(__FreeBSD__) || defined(__OpenBSD__)
 #include <sys/param.h>
