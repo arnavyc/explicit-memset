@@ -202,9 +202,10 @@ static MunitResult with_bzero_test(const MunitParameter params[],
 }
 
 static MunitTest tests[] = {
-    {(char *)"/without-bzero", without_bzero_test, NULL, NULL, MUNIT_TEST_OPTION_NONE,
+    {(char *)"/without-bzero", without_bzero_test, NULL, NULL,
+     MUNIT_TEST_OPTION_NONE, NULL},
+    {(char *)"/with-bzero", with_bzero_test, NULL, NULL, MUNIT_TEST_OPTION_NONE,
      NULL},
-    {(char *)"/with-bzero", with_bzero_test, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };
 

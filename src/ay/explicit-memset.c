@@ -28,8 +28,8 @@
 #endif
 #endif
 
-#if !defined(HAVE_EXPLICIT_BZERO) &&                           \
-    (defined(__FreeBSD__) && __FreeBSD_version >= 1100037) ||                  \
+#if !defined(HAVE_EXPLICIT_BZERO) &&                                           \
+        (defined(__FreeBSD__) && __FreeBSD_version >= 1100037) ||              \
     (defined(__OpenBSD__) && OpenBSD >= 201405)
 /*
  * explicit_bzero was added in
