@@ -48,8 +48,8 @@ void *memmem(const void *haystack, size_t hlen, const void *needle,
 #endif /* __GLIBC__ */
 
 struct count_of_secrets {
-  int without_bzero;
-  int with_bzero;
+  int without_memset;
+  int with_memset;
 };
 
 static struct count_of_secrets secrets_count = {0};
@@ -140,7 +140,7 @@ static int count_secrets(const char *buf) {
   return (res);
 }
 
-static char *test_without_bzero(void) {
+static char *test_without_memset(void) {
   char buf[SECRETBYTES];
   assert_on_stack();
   populate_secret(buf, sizeof(buf));
@@ -150,7 +150,7 @@ static char *test_without_bzero(void) {
   return (res);
 }
 
-static char *test_with_bzero(void) {
+static char *test_with_memset(void) {
   char buf[SECRETBYTES];
   assert_on_stack();
   populate_secret(buf, sizeof(buf));
@@ -162,59 +162,59 @@ static char *test_with_bzero(void) {
   return (res);
 }
 
-static void do_test_without_bzero(int signo) {
-  char *buf = test_without_bzero();
-  secrets_count.without_bzero = count_secrets(buf);
+static void do_test_without_memset(int signo) {
+  char *buf = test_without_memset();
+  secrets_count.without_memset = count_secrets(buf);
 }
 
-static void do_test_with_bzero(int signo) {
-  char *buf = test_with_bzero();
-  secrets_count.with_bzero = count_secrets(buf);
+static void do_test_with_memset(int signo) {
+  char *buf = test_with_memset();
+  secrets_count.with_memset = count_secrets(buf);
 }
 
-static MunitResult without_bzero_test(const MunitParameter params[],
-                                      void *user_data_or_fixture) {
+static MunitResult without_memset_test(const MunitParameter params[],
+                                       void *user_data_or_fixture) {
   /*
-   * First, test that if we *don't* call explicit_bzero, that we
+   * First, test that if we *don't* call ay_explicit_memset, that we
    * *are* able to find at least one instance of the secret data still
    * on the stack.  This sanity checks that call_on_stack() and
    * populate_secret() work as intended.
    */
 
   memset(altstack, 0, sizeof(altstack));
-  call_on_stack(do_test_without_bzero);
+  call_on_stack(do_test_without_memset);
 
-  munit_assert_int(secrets_count.without_bzero, >=, 1);
+  munit_assert_int(secrets_count.without_memset, >=, 1);
   return MUNIT_OK;
 }
 
-static MunitResult with_bzero_test(const MunitParameter params[],
-                                   void *user_data_or_fixture) {
+static MunitResult with_memset_test(const MunitParameter params[],
+                                    void *user_data_or_fixture) {
   /*
-   * Now test with a call to explicit_bzero() and check that we
+   * Now test with a call to ay_explicit_memset() and check that we
    * *don't* find any instances of the secret data.
    */
   memset(altstack, 0, sizeof(altstack));
-  call_on_stack(do_test_with_bzero);
+  call_on_stack(do_test_with_memset);
 
-  munit_assert_int(secrets_count.with_bzero, ==, 0);
+  munit_assert_int(secrets_count.with_memset, ==, 0);
   return MUNIT_OK;
 }
 
 static MunitTest tests[] = {
-    {(char *)"/without-bzero", without_bzero_test, NULL, NULL,
+    {(char *)"/without-memset", without_memset_test, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
-    {(char *)"/with-bzero", with_bzero_test, NULL, NULL, MUNIT_TEST_OPTION_NONE,
-     NULL},
+    {(char *)"/with-memset", with_memset_test, NULL, NULL,
+     MUNIT_TEST_OPTION_NONE, NULL},
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };
 
 static const MunitSuite suite = {
-    (char *)"/explicit-bzero", /* name */
-    tests,                     /* tests */
-    NULL,                      /* suites */
-    1,                         /* iterations */
-    MUNIT_SUITE_OPTION_NONE,   /* options */
+    (char *)"/explicit-memset", /* name */
+    tests,                      /* tests */
+    NULL,                       /* suites */
+    1,                          /* iterations */
+    MUNIT_SUITE_OPTION_NONE,    /* options */
 };
 
 int main(int argc, char *const argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
@@ -226,7 +226,7 @@ int main(int argc, char *const argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
    * running on it.  Unfortunately, this means we risk clobbering the
    * buffer ourselves.
    *
-   * To minimize this risk, test_with{,out}_bzero() are responsible for
+   * To minimize this risk, test_with{,out}_memset() are responsible for
    * locating the offset of their buf variable within altstack, and
    * and returning that address.  Then we can simply memcmp() repeatedly
    * to count how many instances of secret we found.
