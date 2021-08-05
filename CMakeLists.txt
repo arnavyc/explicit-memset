@@ -106,3 +106,4 @@ endif ()
 if (${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(tests)
 endif ()
+
