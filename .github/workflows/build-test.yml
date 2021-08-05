@@ -32,6 +32,12 @@ jobs:
             cc: gcc
             cxx: g++
 
+          - name: 'Ubuntu 20.04 - Clang'
+            runner: ubuntu-20.04
+            build-type: Release
+            cc: clang
+            cxx: clang++
+
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
@@ -46,7 +52,7 @@ jobs:
         shell: pwsh
         if: runner.os == 'Windows' && matrix.config.cc == 'clang'
         run: |
-          echo "PATH=$env:PATH;C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Configure CMake project
         shell: pwsh
