@@ -70,4 +70,3 @@ jobs:
 
       - name: Test the project
         run: ctest -V --test-dir build/ --output-on-failure
-
