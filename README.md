@@ -26,7 +26,7 @@ WIP
 
 To use `ay_explicit_memset()` function:
 
-- Include this project using CMake and link your targets with CMake targets
+- Include this project using CMake and link your targets with CMake target
   `explicit-memset::explicit-memset`.
 
 - Or, copy [`include/ay/explicit-memset.h`](include/ay/explicit-memset.h) into
