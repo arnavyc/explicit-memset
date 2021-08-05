@@ -13,8 +13,6 @@ elimination in C compilers.
 Useful for clearing out memory after a region of memory has been used by the
 program.
 
-WIP
-
 ## Table of Contents
 
 - [Install](#install)
