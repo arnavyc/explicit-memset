@@ -20,6 +20,12 @@ jobs:
             cc: cl
             cxx: cl
 
+          - name: 'Windows Latest - Clang'
+            runner: windows-latest
+            build-type: Release
+            cc: clang
+            cxx: clang++
+
           - name: 'Ubuntu 20.04 - GCC'
             runner: ubuntu-20.04
             build-type: Release
@@ -35,6 +41,11 @@ jobs:
 
       - name: Setup MSVC environment if Windows
         uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Add clang path to $PATH env
+        shell: bash
+        if: runner.os == 'Windows' && matrix.config.cc == 'clang'
+        run: echo "PATH=$PATH:C:\msys64\mingw64\bin" >> $GITHUB_ENV
 
       - name: Configure CMake project
         shell: pwsh
