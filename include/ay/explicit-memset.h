@@ -33,6 +33,18 @@ extern "C" {
 
 #include <stddef.h>
 
+/**
+ * Writes len bytes of value c (converted to an unsigned char) to the string
+ * str. It is guaranteed not to be optimized away by the compiler even if str is
+ * no longer used and is about to be freed or go out of scope.
+ *
+ * @param str Pointer to the block of memory to fill
+ * @param c Value to be set. The value is passed as an int, but the function
+ * fills the block of memory using the unsigned char conversion of this value
+ * @param n Number of bytes to be set to the value
+ *
+ * @returns str is returned
+ */
 void *ay_explicit_memset(void *str, int c, size_t n);
 
 #ifdef AY_EXPLICIT_MEMSET_IMPLEMENTATION

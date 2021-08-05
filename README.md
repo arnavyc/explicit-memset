@@ -41,9 +41,8 @@ To use `ay_explicit_memset()` function:
 
 ## Usage
 
-```
-
-```
+Refer to [`include/ay/explicit-memset.h`](include/ay/explicit-memset.h) for
+usage.
 
 ## Contributing
 
