@@ -9,7 +9,8 @@ SPDX-License-Identifier: 0BSD
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 `ay_explicit_memset` function, a version of `memset` that can escape dead code
-elimination in C compilers.
+elimination in C compilers. Licensed under 0-clause BSD License (public
+domain-like license).
 
 Useful for clearing out memory after a region of memory has been used by the
 program.
