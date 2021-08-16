@@ -5,6 +5,7 @@ SPDX-License-Identifier: 0BSD
 # explicit-memset
 
 [![GitHub](https://img.shields.io/github/license/arnavyc/explicit-memset?logo=github&style=flat-square)](LICENSE.md)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/arnavyc/explicit-memset/Build%20and%20test?logo=github&style=flat-square)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 `ay_explicit_memset` function, a version of `memset` that can escape dead code
