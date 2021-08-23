@@ -94,8 +94,6 @@ void *ay_explicit_memset(void *str, int c, size_t n);
 #if defined(__GNUC__) && (defined(__ELF__) || defined(__APPLE_CC__))
 #define HAVE_WEAK_LINKING_SUPPORT 1
 __attribute__((weak)) void weak_sym_to_avoid_optimization(void *str, size_t n);
-#else
-static void *(*const volatile memset_ptr)(void *, int, size_t) = memset;
 #endif
 
 void *ay_explicit_memset(void *str, int c, size_t n) {
@@ -116,35 +114,37 @@ void *ay_explicit_memset(void *str, int c, size_t n) {
 #endif
   }
 
-  void *result_of_memset = NULL;
-#if defined(HAVE_WEAK_LINKING_SUPPORT)
+#if defined(__GNUC__)
   /* Use weak linking if available to prevent compiler from optimizing away
    * memset calls. (Approach used by libsodium[1]).
    *
    * [1]:
    * https://github.com/jedisct1/libsodium/blob/master/src/libsodium/sodium/utils.c#L106
    */
-  result_of_memset = memset(str, c, n);
+  void *result_of_memset = memset(str, c, n);
+
+#ifdef HAVE_WEAK_LINKING_SUPPORT
   if (weak_sym_to_avoid_optimization) {
     weak_sym_to_avoid_optimization(str, n);
   }
-#else
-  /* Use a volatile pointer to memset as used by OpenSSL[1] for securely
-   * clearing memory.
-   *
-   * [1]:
-   * https://github.com/openssl/openssl/blob/f77208693ec3bda99618e6f76c0f8d279c0077bb/crypto/mem_clr.c
-   */
-  result_of_memset = (memset_ptr)(str, c, n);
-#endif /* defined(HAVE_WEAK_LINKING_SUPPORT) */
+#endif
 
-#ifdef __GNUC__
   /* Use a ASM memory barrier to force GCC to not optimize memset away. (Used by
    * Glibc) */
   __asm__ __volatile__("" : : "r"(str) : "memory");
-#endif /* __GNUC__ */
 
   return result_of_memset;
+#else
+  /* Use a volatile pointer to memory buffer as used by Libsodium for securely
+   * clearing memory. */
+  volatile unsigned char *vstr = (volatile unsigned char *)str;
+  for (size_t i = 0; i < n; ++i) {
+    vstr[i] = (unsigned char)c;
+  }
+
+  return str;
+#endif /* defined(__GNUC__) */
+
 #endif
 }
 
