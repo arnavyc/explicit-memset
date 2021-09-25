@@ -18,4 +18,4 @@
  */
 
 #define AY_EXPLICIT_MEMSET_IMPLEMENTATION
-#include <ay/explicit-memset.h>
+#  include <ay/explicit-memset.h>
