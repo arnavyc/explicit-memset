@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: 0BSD
  */
 
-#define _GNU_SOURCE
-
 #include <assert.h>
 #include <errno.h>
 #include <signal.h>
@@ -15,29 +13,31 @@
 #include <ay/explicit-memset.h>
 #include <munit.h>
 
-#ifndef __GLIBC__
+/*#ifndef __GLIBC__*/
 /*
- * The memmem() function finds the start of the first occurrence of the
+ * The my_memmem() function finds the start of the first occurrence of the
  * substring 'needle' of length 'nlen' in the memory area 'haystack' of
  * length 'hlen'.
  *
  * The return value is a pointer to the beginning of the sub-string, or
  * NULL if the substring is not found.
  */
-void *memmem(const void *haystack, size_t hlen, const void *needle,
-             size_t nlen) {
+void *my_memmem(const void *haystack, size_t hlen, const void *needle,
+                size_t nlen) {
   int needle_first;
   const void *p = haystack;
   size_t plen = hlen;
 
-  if (!nlen)
+  if (!nlen) {
     return NULL;
+  }
 
   needle_first = *(unsigned char *)needle;
 
   while (plen >= nlen && (p = memchr(p, needle_first, plen - nlen + 1))) {
-    if (!memcmp(p, needle, nlen))
+    if (!memcmp(p, needle, nlen)) {
       return (void *)p;
+    }
 
     p++;
     plen = hlen - (p - haystack);
@@ -45,7 +45,7 @@ void *memmem(const void *haystack, size_t hlen, const void *needle,
 
   return NULL;
 }
-#endif /* __GLIBC__ */
+/* #endif */
 
 struct count_of_secrets {
   int without_memset;
@@ -55,7 +55,7 @@ struct count_of_secrets {
 static struct count_of_secrets secrets_count = {0};
 
 /* 128 bits of random data. */
-static const char secret[16] = {
+static const unsigned char secret[16] = {
     0xa0, 0x6c, 0x0c, 0x81, 0xba, 0xd8, 0x5b, 0x0c,
     0xb0, 0xd6, 0xd4, 0xe3, 0xeb, 0x52, 0x5f, 0x96,
 };
@@ -134,8 +134,9 @@ static int count_secrets(const char *buf) {
   int res = 0;
   size_t i;
   for (i = 0; i < SECRETCOUNT; i++) {
-    if (memcmp(buf + i * sizeof(secret), secret, sizeof(secret)) == 0)
+    if (memcmp(buf + i * sizeof(secret), secret, sizeof(secret)) == 0) {
       res += 1;
+    }
   }
   return (res);
 }
@@ -144,7 +145,7 @@ static char *test_without_memset(void) {
   char buf[SECRETBYTES];
   assert_on_stack();
   populate_secret(buf, sizeof(buf));
-  char *res = memmem(altstack, sizeof(altstack), buf, sizeof(buf));
+  char *res = my_memmem(altstack, sizeof(altstack), buf, sizeof(buf));
 
   munit_assert_not_null(res);
   return (res);
@@ -154,7 +155,7 @@ static char *test_with_memset(void) {
   char buf[SECRETBYTES];
   assert_on_stack();
   populate_secret(buf, sizeof(buf));
-  char *res = memmem(altstack, sizeof(altstack), buf, sizeof(buf));
+  char *res = my_memmem(altstack, sizeof(altstack), buf, sizeof(buf));
 
   munit_assert_not_null(res);
 
@@ -163,17 +164,21 @@ static char *test_with_memset(void) {
 }
 
 static void do_test_without_memset(int signo) {
+  (void)signo;
   char *buf = test_without_memset();
   secrets_count.without_memset = count_secrets(buf);
 }
 
 static void do_test_with_memset(int signo) {
+  (void)signo;
   char *buf = test_with_memset();
   secrets_count.with_memset = count_secrets(buf);
 }
 
 static MunitResult without_memset_test(const MunitParameter params[],
                                        void *user_data_or_fixture) {
+  (void)params;
+  (void)user_data_or_fixture;
   /*
    * First, test that if we *don't* call ay_explicit_memset, that we
    * *are* able to find at least one instance of the secret data still
@@ -190,6 +195,8 @@ static MunitResult without_memset_test(const MunitParameter params[],
 
 static MunitResult with_memset_test(const MunitParameter params[],
                                     void *user_data_or_fixture) {
+  (void)params;
+  (void)user_data_or_fixture;
   /*
    * Now test with a call to ay_explicit_memset() and check that we
    * *don't* find any instances of the secret data.
