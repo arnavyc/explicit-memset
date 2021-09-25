@@ -6,7 +6,7 @@ SPDX-License-Identifier: 0BSD
 
 [![GitHub](https://img.shields.io/github/license/arnavyc/explicit-memset?logo=github&style=flat-square)](LICENSE.md)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/arnavyc/explicit-memset/Build%20and%20test?logo=github&style=flat-square)
-![LGTM Grade](https://img.shields.io/lgtm/grade/cpp/github/arnavyc/explicit-memset?logo=lgtm&style=flat-square)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/github/arnavyc/explicit-memset?logo=lgtm&style=flat-square)](https://lgtm.com/projects/g/arnavyc/explicit-memset/context:cpp)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 `ay_explicit_memset` function, a version of `memset` that can escape dead code
