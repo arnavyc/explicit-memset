@@ -54,6 +54,10 @@ void *ay_explicit_memset(void *str, int c, size_t n);
 #define __STDC_WANT_LIB_EXT1__ 1
 #endif
 
+#if defined(__linux__)
+#define _GNU_SOURCE
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 
