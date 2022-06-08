@@ -34,6 +34,9 @@ cmake_dependent_option(${PROJECT_NAME}_INSTALL
   OFF
 )
 
+# Add CPM (https://github.com/cpm-cmake/CPM.cmake)
+include(cmake/CPM.cmake)
+
 ####################
 # Section: Targets #
 ####################

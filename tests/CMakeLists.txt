@@ -2,8 +2,10 @@
 #
 # SPDX-License-Identifier: 0BSD
 
-include(DownloadAndUseMunit)
-include(Munit)
+CPMAddPackage("gh:arnavyc/Munit.cmake@0.1.0")
+munit_cmake_init()
+
+include(DownloadMunitCPM)
 
 if (UNIX)
   add_executable(explicit-memset_tests explicit-memset.test.c)
