@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 arnavyc <arnavyc@outlook.com>
+ * Copyright 2022 arnavyc <arnavyc@outlook.com>
  * SPDX-License-Identifier: 0BSD
  */
 

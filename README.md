@@ -4,7 +4,6 @@ SPDX-License-Identifier: 0BSD
 
 # explicit-memset
 
-[![GitHub](https://img.shields.io/github/license/arnavyc/explicit-memset?logo=github&style=flat-square)](LICENSE.md)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/arnavyc/explicit-memset/Build%20and%20test?logo=github&style=flat-square)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
@@ -52,7 +51,7 @@ additional terms or conditions.
 
 ## License
 
-&copy; 2021 arnavyc \<arnavyc@outlook.com\>
+&copy; 2022 arnavyc \<arnavyc@outlook.com\>
 
 Licensed under the BSD Zero Clause License. See [LICENSE file](LICENSE.md) in
 the project root, or https://opensource.org/licenses/0BSD for full license
